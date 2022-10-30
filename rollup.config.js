@@ -24,7 +24,8 @@ function getConfig(inputFile, type, isProd) {
 		input: inputFile,
 		output: {
 			format: isModular ? 'esm' : 'iife',
-			file: `./dist/lightweight-charts.${suffix}.${mode}.js`,
+			file: `../src/main/public/js/lightweight-charts/dist/lightweight-charts.${suffix}.${mode}.js`,
+			sourcemap: true,
 			banner: `
 /*!
  * @license
@@ -64,13 +65,11 @@ function getConfig(inputFile, type, isProd) {
 }
 
 const configs = [
-	getConfig('./lib/prod/src/index.js', 'module', false),
 	getConfig('./lib/prod/src/standalone.js', 'standalone', false),
 ];
 
 if (process.env.NODE_ENV === 'production') {
 	configs.push(
-		getConfig('./lib/prod/src/index.js', 'module', true),
 		getConfig('./lib/prod/src/standalone.js', 'standalone', true)
 	);
 }

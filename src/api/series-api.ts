@@ -28,6 +28,8 @@ import { IPriceScaleApi } from './iprice-scale-api';
 import { BarsInfo, ISeriesApi } from './iseries-api';
 import { priceLineOptionsDefaults } from './options/price-line-options-defaults';
 import { PriceLine } from './price-line-api';
+import {SeriesLine} from "../model/series-lines";
+import {TimePriceCoordinate} from "../helpers/time-price-coordinate";
 
 export class SeriesApi<TSeriesType extends SeriesType> implements ISeriesApi<TSeriesType> {
 	protected _series: Series<TSeriesType>;
@@ -156,6 +158,15 @@ export class SeriesApi<TSeriesType extends SeriesType> implements ISeriesApi<TSe
 				...item as Omit<SeriesMarker<TimePoint>, 'time' | 'originalTIme'>,
 			};
 		});
+	}
+
+	public setLines(data: SeriesLine<Time>[]) {
+		const convertedLines = data.map<SeriesLine<TimePoint>>((line: SeriesLine<Time>) => ({
+			...line,
+			coordinate1: new TimePriceCoordinate<TimePoint>(convertTime(line.coordinate1.time), line.coordinate1.price),
+			coordinate2: new TimePriceCoordinate<TimePoint>(convertTime(line.coordinate2.time), line.coordinate2.price)
+		}));
+		this._series.setLines(convertedLines);
 	}
 
 	public applyOptions(options: SeriesPartialOptionsMap[TSeriesType]): void {

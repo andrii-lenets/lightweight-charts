@@ -50,6 +50,8 @@ import {
 	SeriesType,
 } from './series-options';
 import { TimePoint, TimePointIndex } from './time-data';
+import {SeriesLine} from "./series-lines";
+import {SeriesLinesPaneView} from "../views/pane/series-lines-pane-view";
 
 export interface LastValueDataResultWithoutData {
 	noData: true;
@@ -110,6 +112,8 @@ export class Series<T extends SeriesType = SeriesType> extends PriceDataSource i
 	private _indexedMarkers: InternalSeriesMarker<TimePointIndex>[] = [];
 	private _markersPaneView!: SeriesMarkersPaneView;
 	private _animationTimeoutId: TimerId | null = null;
+	private _lines: readonly SeriesLine<TimePoint>[] = [];
+	private _linesPaneView!: SeriesLinesPaneView;
 
 	public constructor(model: ChartModel, options: SeriesOptionsInternal<T>, seriesType: T) {
 		super(model);
@@ -244,6 +248,8 @@ export class Series<T extends SeriesType = SeriesType> extends PriceDataSource i
 
 		this._paneView.update('data');
 		this._markersPaneView.update('data');
+		this._linesPaneView.update('data');
+
 
 		if (this._lastPriceAnimationPaneView !== null) {
 			if (updateInfo && updateInfo.lastBarUpdatedOrNewBarsAddedToTheRight) {
@@ -277,6 +283,16 @@ export class Series<T extends SeriesType = SeriesType> extends PriceDataSource i
 
 	public indexedMarkers(): InternalSeriesMarker<TimePointIndex>[] {
 		return this._indexedMarkers;
+	}
+
+	public setLines(data: readonly SeriesLine<TimePoint>[]): void {
+		this._lines = data;
+		this._linesPaneView.update('data');
+		this.model().updateSource(this);
+	}
+
+	public lines(): readonly SeriesLine<TimePoint>[] {
+		return this._lines;
 	}
 
 	public createPriceLine(options: PriceLineOptions): CustomPriceLine {
@@ -371,7 +387,8 @@ export class Series<T extends SeriesType = SeriesType> extends PriceDataSource i
 		res.push(
 			this._paneView,
 			this._priceLineView,
-			this._markersPaneView
+			this._markersPaneView,
+			this._linesPaneView
 		);
 
 		const priceLineViews = this._customPriceLines.map((line: CustomPriceLine) => line.paneView());
@@ -421,6 +438,7 @@ export class Series<T extends SeriesType = SeriesType> extends PriceDataSource i
 	public updateAllViews(): void {
 		this._paneView.update();
 		this._markersPaneView.update();
+		this._linesPaneView.update();
 
 		for (const priceAxisView of this._priceAxisViews) {
 			priceAxisView.update();
@@ -594,6 +612,7 @@ export class Series<T extends SeriesType = SeriesType> extends PriceDataSource i
 
 	private _recreatePaneViews(): void {
 		this._markersPaneView = new SeriesMarkersPaneView(this, this.model());
+		this._linesPaneView = new SeriesLinesPaneView(this);
 
 		switch (this._seriesType) {
 			case 'Bar': {

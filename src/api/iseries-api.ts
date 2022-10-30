@@ -15,6 +15,7 @@ import { Range, Time } from '../model/time-data';
 import { SeriesDataItemTypeMap } from './data-consumer';
 import { IPriceLine } from './iprice-line';
 import { IPriceScaleApi } from './iprice-scale-api';
+import {SeriesLine} from "../model/series-lines";
 
 /**
  * Represents a range of bars and the number of bars outside the range.
@@ -218,6 +219,8 @@ export interface ISeriesApi<TSeriesType extends SeriesType> {
 	 * Returns an array of series markers.
 	 */
 	markers(): SeriesMarker<Time>[];
+
+	setLines(data: SeriesLine<Time>[]): void;
 
 	/**
 	 * Creates a new price line
