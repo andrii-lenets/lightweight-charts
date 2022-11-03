@@ -3,7 +3,7 @@ import { OriginalTime } from './time-data';
 /**
  * Represents the position of a series marker relative to a bar.
  */
-export type SeriesMarkerPosition = 'aboveBar' | 'belowBar' | 'inBar';
+export type SeriesMarkerPosition = 'aboveBar' | 'belowBar' | 'inBar' | 'atPrice';
 
 /**
  * Represents the shape of a series marker.
@@ -44,6 +44,8 @@ export interface SeriesMarker<TimeType> {
 	 * @defaultValue `1`
 	 */
 	size?: number;
+
+	price?: number;
 
 	/**
 	 * @internal

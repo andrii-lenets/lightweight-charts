@@ -42,7 +42,8 @@ function fillSizeAndY(
 	shapeMargin: number,
 	priceScale: PriceScale,
 	timeScale: TimeScale,
-	firstValue: number
+	firstValue: number,
+	price?: number
 ): void {
 	const inBarPrice = isNumber(seriesData) ? seriesData : seriesData.close;
 	const highPrice = isNumber(seriesData) ? seriesData : seriesData.high;
@@ -76,6 +77,23 @@ function fillSizeAndY(
 				offsets.belowBar += textHeight * (1 + 2 * Constants.TextMargin);
 			}
 			offsets.belowBar += shapeSize + shapeMargin;
+			return;
+		}
+		case 'atPrice': {
+			if (rendererItem.shape === 'arrowUp') {
+				rendererItem.y = priceScale.priceToCoordinate(price ? price : inBarPrice, firstValue) + rendererItem.size / 2 as Coordinate;
+			} else if (rendererItem.shape === 'arrowDown') {
+				rendererItem.y = priceScale.priceToCoordinate(price ? price : inBarPrice, firstValue) - rendererItem.size / 2 as Coordinate;
+			} else {
+				rendererItem.y = priceScale.priceToCoordinate(price ? price : inBarPrice, firstValue);
+			}
+			if (rendererItem.text !== undefined) {
+				if (rendererItem.shape === 'arrowDown') {
+					rendererItem.text.y = rendererItem.y - halfSize - textHeight * (0.5 + Constants.TextMargin) as Coordinate;
+				} else {
+					rendererItem.text.y = rendererItem.y + halfSize + shapeMargin + textHeight * (0.5 + Constants.TextMargin) as Coordinate;
+				}
+			}
 			return;
 		}
 	}
@@ -213,7 +231,7 @@ export class SeriesMarkersPaneView implements IUpdatablePaneView {
 			if (dataAt === null) {
 				continue;
 			}
-			fillSizeAndY(rendererItem, marker, dataAt, offsets, layoutOptions.fontSize, shapeMargin, priceScale, timeScale, firstValue.value);
+			fillSizeAndY(rendererItem, marker, dataAt, offsets, layoutOptions.fontSize, shapeMargin, priceScale, timeScale, firstValue.value, marker.price);
 		}
 		this._invalidated = false;
 	}
