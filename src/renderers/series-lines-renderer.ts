@@ -19,7 +19,10 @@ export interface SeriesLineRendererDataItem {
     rightTip?: SeriesLineTip;
     internalId: number;
     externalId?: string;
-    text?: string;
+    text?: {
+        content: string,
+        width: number
+    };
 }
 
 export interface SeriesLineRendererData {
@@ -45,7 +48,8 @@ export class SeriesLinesRenderer extends ScaledRenderer {
         this._data?.items.forEach(line => {
             this.drawLine(ctx, line)
             if (line.text !== undefined) {
-                this.drawText(ctx, line.text, line);
+                line.text.width = this._textWidthCache.measureText(ctx, line.text.content);
+                this.drawText(ctx, line.text.content, line);
             }
         });
     }
@@ -153,7 +157,7 @@ export class SeriesLinesRenderer extends ScaledRenderer {
 
         const hitLine = rcvx >= 0 && rcvx <= rvx && rcvy >= -lw && rcvy <= lw;
         if (line.text) {
-            const tw = Math.min(vl, line.text.length * this._fontSize)
+            const tw = Math.min(vl, line.text.width)
 
             const hitText = rcvx >= (rvx - tw) / 2 && rcvx <= (rvx + tw) / 2 && rcvy >= 1.5 * -this._fontSize && rcvy <= 0;
 

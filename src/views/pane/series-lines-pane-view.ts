@@ -52,7 +52,7 @@ export class SeriesLinesPaneView implements IUpdatablePaneView {
 
     private makeValid(): void {
         this._data.items = this._series.lines().map<SeriesLineRendererDataItem>((line: SeriesLine<TimePoint>) => {
-            return {
+            const item = {
                 x1: this.timeToCoordinate(line.coordinate1.time),
                 y1: this.priceToCoordinate(line.coordinate1.price),
                 x2: this.timeToCoordinate(line.coordinate2.time),
@@ -63,9 +63,12 @@ export class SeriesLinesPaneView implements IUpdatablePaneView {
                 leftTip: line.leftTip,
                 rightTip: line.rightTip,
                 internalId: -123,
-                externalId: line.id,
-                text: line.text
-            }
+                externalId: line.id
+            } as SeriesLineRendererDataItem;
+
+            if (line.text) item.text = {content: line.text, width: 0}
+
+            return item;
         })
     }
 
