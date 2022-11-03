@@ -18,7 +18,8 @@ export function hitTestText(
 	y: Coordinate
 ): boolean {
 	const halfHeight = textHeight / 2;
+	const halfWidth = textWidth / 2;
 
-	return x >= textX && x <= textX + textWidth &&
+	return x >= textX - halfWidth && x <= textX + halfWidth &&
 		y >= textY - halfHeight && y <= textY + halfHeight;
 }
