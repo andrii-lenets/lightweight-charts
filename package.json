@@ -87,8 +87,6 @@
     "yargs": "~17.6.0"
   },
   "scripts": {
-    "postinstall": "npm run install-hooks",
-    "install-hooks": "node scripts/githooks/install.js",
     "clean": "rimraf lib/ dist/",
     "bundle-dts": "tsc --noEmit --allowJs dts-config.js && dts-bundle-generator --config dts-config.js",
     "tsc": "ttsc -p tsconfig.prod.json",
@@ -106,6 +104,7 @@
     "build:prod": "cross-env NODE_ENV=production npm run build",
     "build:release": "cross-env BUILD_TAG=release npm run build:prod",
     "prepare-release": "npm-run-all clean build:release && node ./scripts/clean-package-json.js",
+    "prepare": "npm-run-all clean build:release && node ./scripts/clean-package-json.js",
     "size-limit": "size-limit",
     "verify": "npm-run-all clean -p lint check-markdown-links build:prod -p check-dts-docs tsc-verify test size-limit",
     "test": "mocha tests/unittests/**/*.spec.ts"
