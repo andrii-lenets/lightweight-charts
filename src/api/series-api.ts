@@ -163,8 +163,8 @@ export class SeriesApi<TSeriesType extends SeriesType> implements ISeriesApi<TSe
 	public setLines(data: SeriesLine<Time>[]) {
 		const convertedLines = data.map<SeriesLine<TimePoint>>((line: SeriesLine<Time>) => ({
 			...line,
-			coordinate1: new TimePriceCoordinate<TimePoint>(convertTime(line.coordinate1.time), line.coordinate1.price),
-			coordinate2: new TimePriceCoordinate<TimePoint>(convertTime(line.coordinate2.time), line.coordinate2.price)
+			from: new TimePriceCoordinate<TimePoint>(convertTime(line.from.time), line.from.price),
+			to: new TimePriceCoordinate<TimePoint>(convertTime(line.to.time), line.to.price)
 		}));
 		this._series.setLines(convertedLines);
 	}

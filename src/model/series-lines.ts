@@ -5,8 +5,8 @@ import {SeriesMarker} from "./series-markers";
 export type SeriesLineTip = 'normal' | 'arrow';
 
 export interface SeriesLine<TimeType> {
-    coordinate1: TimePriceCoordinate<TimeType>;
-    coordinate2: TimePriceCoordinate<TimeType>;
+    from: TimePriceCoordinate<TimeType>;
+    to: TimePriceCoordinate<TimeType>;
     color: string;
     id?: string;
     text?: string;

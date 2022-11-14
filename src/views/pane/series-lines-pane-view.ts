@@ -57,10 +57,10 @@ export class SeriesLinesPaneView implements IUpdatablePaneView {
             .filter(line => this.isVisible(line, visibleTimeRange))
             .map<SeriesLineRendererDataItem>((line: SeriesLine<TimePoint>) => {
                 const item = {
-                    x1: this.timeToCoordinate(line.coordinate1.time),
-                    y1: this.priceToCoordinate(line.coordinate1.price),
-                    x2: this.timeToCoordinate(line.coordinate2.time),
-                    y2: this.priceToCoordinate(line.coordinate2.price),
+                    x1: this.timeToCoordinate(line.from.time),
+                    y1: this.priceToCoordinate(line.from.price),
+                    x2: this.timeToCoordinate(line.to.time),
+                    y2: this.priceToCoordinate(line.to.price),
                     color: line.color,
                     width: line.width,
                     style: line.style,
@@ -78,8 +78,8 @@ export class SeriesLinesPaneView implements IUpdatablePaneView {
 
     private isVisible(line: SeriesLine<TimePoint>, timeRange: TimePointsRange | null): boolean {
         return timeRange !== null &&
-            line.coordinate1.time.timestamp <= timeRange.to.timestamp &&
-            line.coordinate2.time.timestamp >= timeRange.from.timestamp;
+            line.from.time.timestamp <= timeRange.to.timestamp &&
+            line.to.time.timestamp >= timeRange.from.timestamp;
     }
 
     private timeToCoordinate(time: TimePoint): Coordinate {
